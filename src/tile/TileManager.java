@@ -19,10 +19,10 @@ public class TileManager {
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         this.tiles = new Tile[10];
-        mapTileNum = new int[gamePanel.maxScreenCol][gamePanel.maxScreenRaw];
+        mapTileNum = new int[gamePanel.maxWorldCol][gamePanel.maxWorldRow];
 
         getTileImage();
-        loadMap("/maps/map01.txt");
+        loadMap("/maps/world01.txt");
     }
 
     public void getTileImage() {
@@ -38,40 +38,38 @@ public class TileManager {
             tiles[2] = new Tile();
             tiles[2].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/water.png")));
 
+            tiles[3] = new Tile();
+            tiles[3].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/earth.png")));
+
+            tiles[4] = new Tile();
+            tiles[4].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/tree.png")));
+
+            tiles[5] = new Tile();
+            tiles[5].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/sand.png")));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void loadMap(String filePath) {
+    public void loadMap(String worldPath) {
 
         try {
 
-            InputStream inputStream = getClass().getResourceAsStream(filePath);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            InputStream inputStream = getClass().getResourceAsStream(worldPath);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
 
-            int col = 0;
-            int row = 0;
-
-            while (col < gamePanel.maxScreenCol && row < gamePanel.maxScreenRaw) {
+            for (int y = 0; y < gamePanel.maxWorldRow; y++) {
 
                 String line = bufferedReader.readLine();
+                String[] numbers = line.split(" ");
 
-                while (col < gamePanel.maxScreenCol) {
+                for (int x = 0; x < gamePanel.maxWorldCol; x++) {
 
-                    String[] numbers = line.split(" ");
-
-                    int num = Integer.parseInt(numbers[col]);
-
-                    mapTileNum[col][row] = num;
-                    col++;
-                }
-
-                if (col == gamePanel.maxScreenCol) {
-                    col = 0;
-                    row++;
+                    mapTileNum[x][y] = Integer.parseInt(numbers[x]);
                 }
             }
+
             bufferedReader.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Player extends Entity {
-
     GamePanel gamePanel;
     KeyHandler keyH;
+
+    public final int screenX;
+    public final int screenY;
 
     public Player(GamePanel gamePanel, KeyHandler keyH) {
         this.gamePanel = gamePanel;
@@ -20,12 +22,17 @@ public class Player extends Entity {
 
         setDefaultValues();
         getPlayerImage();
+
+        // Camera movement (attached to the character)
+        screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
+        screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
     }
 
     public void setDefaultValues() {
 
-        x = 100;
-        y = 100;
+        // characters center position on the world map
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 21;
         speed = 4;
         direction = "down";
     }
@@ -54,16 +61,16 @@ public class Player extends Entity {
 
             if (keyH.upPressed) {
                 direction = "up";
-                y -= speed;
+                worldY -= speed;
             } else if (keyH.downPressed) {
                 direction = "down";
-                y += speed;
+                worldY += speed;
             } else if (keyH.leftPressed) {
                 direction = "left";
-                x -= speed;
+                worldX -= speed;
             } else if (keyH.rightPressed) {
                 direction = "right";
-                x += speed;
+                worldX += speed;
             }
 
             spriteCounter++;
@@ -119,6 +126,6 @@ public class Player extends Entity {
                 break;
         }
 
-        g2.drawImage(image, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
     }
 }
