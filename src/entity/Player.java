@@ -20,12 +20,13 @@ public class Player extends Entity {
         this.gamePanel = gamePanel;
         this.keyH = keyH;
 
-        setDefaultValues();
-        getPlayerImage();
-
         // Camera movement (attached to the character)
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
+
+        setDefaultValues();
+        getPlayerImage();
+
     }
 
     public void setDefaultValues() {
