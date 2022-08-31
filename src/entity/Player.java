@@ -95,6 +95,7 @@ public class Player extends Entity {
                         System.out.println("There is no direction you need!");
                 }
             }
+
             spriteCounter++;
 
             if (spriteCounter > 12) {

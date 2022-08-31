@@ -1,6 +1,7 @@
 package main;
 
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -35,12 +36,22 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH);
     TileManager tileManager = new TileManager(this);
 
+    // CONTAINS ALL THE ITEMS YOU ARE ABLE TO PICK UP AND KEEP THEM
+    public SuperObject[] objects = new SuperObject[10];
+    public ItemPlacer itemPlacer = new ItemPlacer(this);
+
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+    }
+
+    // WITH THIS METHOD WE ARE ABLE TO ADD SOME OTHER STUFF ON THE FUTURE
+    public void setUpGame() {
+
+        itemPlacer.setObject();
     }
 
     public void startGameThread() {
@@ -92,8 +103,17 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D) g;
 
+        // TILES
         tileManager.draw(g2);
 
+        // OBJECTS
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] != null) {
+                objects[i].draw(g2, this);
+            }
+        }
+
+        //PLAYER
         player.draw(g2);
 
         g2.dispose();
