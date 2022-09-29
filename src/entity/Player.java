@@ -4,6 +4,7 @@ import main.GamePanel;
 import main.KeyHandler;
 
 import javax.imageio.ImageIO;
+import javax.lang.model.element.NestingKind;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -16,15 +17,19 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
+    public int hasKeys = 0;
+
     public Player(GamePanel gamePanel, KeyHandler keyH) {
         this.gamePanel = gamePanel;
         this.keyH = keyH;
-
         // Camera movement (attached to the character)
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
 
         solidArea = new Rectangle(8, 16, 32, 32);
+
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
 
         setDefaultValues();
         getPlayerImage();
@@ -76,6 +81,10 @@ public class Player extends Entity {
             collisionOn = false;
             gamePanel.collisionChecker.checkTile(this);
 
+            // CHECK OBJECT COLLISION
+            int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
+            pickUpObject(objectIndex);
+
             // IF COLLISION IS FALSE PLAYER CAN'T MOVE
             if (!collisionOn) {
                 switch (direction) {
@@ -105,6 +114,44 @@ public class Player extends Entity {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
+            }
+        }
+    }
+
+    public void pickUpObject(int i) {
+
+        if (i != 999) {
+
+            String objectName = gamePanel.objects[i].name;
+
+            switch (objectName) {
+                case "Key":
+                    gamePanel.playSoundEffects(1);
+                    hasKeys++;
+                    gamePanel.objects[i] = null;
+                    gamePanel.ui.showMessage("You got a key!");
+                    break;
+                case "Door":
+                    if (hasKeys > 0) {
+                        gamePanel.playSoundEffects(3);
+                        gamePanel.objects[i] = null;
+                        hasKeys--;
+                        gamePanel.ui.showMessage("You opened the door!");
+                    } else {
+                        gamePanel.ui.showMessage("You need a key!");
+                    }
+                    break;
+                case "Boots":
+                    gamePanel.playSoundEffects(2);
+                    speed += 2;
+                    gamePanel.objects[i] = null;
+                    gamePanel.ui.showMessage("Speed Up!");
+                    break;
+                case "Chest":
+                    gamePanel.ui.gameFinished = true;
+                    gamePanel.stopMusic();
+                    gamePanel.playSoundEffects(4);
+                    break;
             }
         }
     }
